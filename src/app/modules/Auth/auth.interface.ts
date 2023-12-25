@@ -10,3 +10,8 @@ export interface IJWTPayload {
   role: string;
   email: string;
 }
+
+export interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+}

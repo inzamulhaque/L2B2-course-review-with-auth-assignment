@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import config from "../../config";
-import { IUser, UserModel } from "./user.interface";
+import { IOldPassword, IUser, UserModel } from "./user.interface";
 import { user_role_array } from "./user.constant";
 
 const userSchema = new Schema<IUser, UserModel>(
@@ -51,4 +51,33 @@ userSchema.statics.isPasswordMatched = async function (
 };
 
 const User = model<IUser, UserModel>("User", userSchema);
+
+// create model for storing old password
+const oldPasswordSchema = new Schema<IOldPassword>(
+  {
+    id: {
+      type: Schema.Types.ObjectId,
+      required: [true, "ID is required"],
+      ref: "User",
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      ref: "User",
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+export const OldPassword = model<IOldPassword>(
+  "OldPassword",
+  oldPasswordSchema,
+);
+
 export default User;
