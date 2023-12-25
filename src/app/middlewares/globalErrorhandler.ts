@@ -4,6 +4,7 @@ import { ErrorRequestHandler } from "express";
 import { ZodError, object } from "zod";
 import handleZodValidationError from "../error/handleZodError";
 import handleCastError from "../error/handleCastError";
+import JWTError from "../error/JWTErrors";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -26,6 +27,14 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     errorMessage = error?.errorMessage;
     errorDetails = error?.errorDetails;
     stack = error?.stack;
+  }
+
+  if (err instanceof JWTError || err?.name === "JsonWebTokenError") {
+    message = "Unauthorized Access";
+    errorMessage =
+      "You do not have the necessary permissions to access this resource.";
+    errorDetails = null;
+    stack = null;
   }
 
   return res.status(statusCode).json({
