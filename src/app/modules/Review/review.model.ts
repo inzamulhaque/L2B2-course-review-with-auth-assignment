@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { TReview } from "./review.interface";
+import { IReview } from "./review.interface";
 
-const reviewSchema = new Schema<TReview>(
+const reviewSchema = new Schema<IReview>(
   {
     courseId: {
       type: Schema.Types.ObjectId,
@@ -18,12 +18,17 @@ const reviewSchema = new Schema<TReview>(
       type: String,
       required: [true, "Course review is required"],
     },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      required: [true, "User ID is required"],
+      ref: "User",
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const Review = model<TReview>("Review", reviewSchema);
+const Review = model<IReview>("Review", reviewSchema);
 
 export default Review;

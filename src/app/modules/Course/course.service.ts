@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { TCourse, TDetails } from "./course.interface";
+import { ICourse, IDetails } from "./course.interface";
 import Course from "./course.model";
 import AppError from "../../error/AppError";
 import httpStatus from "http-status";
@@ -8,7 +8,7 @@ import { getAllCourseQuery } from "./course.utils";
 import { NextFunction } from "express";
 
 // make course type Partial TCourse for durationInWeeks
-const createCourseIntoDB = async (course: Partial<TCourse>) => {
+const createCourseIntoDB = async (course: Partial<ICourse>) => {
   const { startDate, endDate, details } = course;
   // handling duration
   if (course?.durationInWeeks) {
@@ -61,7 +61,7 @@ const getAllCourseFromDB = async (query: Record<string, unknown>) => {
 
 const updateCourseIntoDB = async (
   id: string,
-  course: Partial<TCourse>,
+  course: Partial<ICourse>,
   next: NextFunction,
 ) => {
   const { tags, details, ...courseRemainingData } = course;
@@ -139,7 +139,7 @@ const updateCourseIntoDB = async (
     if (details && Object.keys(details).length > 0) {
       const updateObject: Record<string, string> = {};
 
-      (Object.keys(details) as (keyof TDetails)[])?.forEach((prop) => {
+      (Object.keys(details) as (keyof IDetails)[])?.forEach((prop) => {
         const value = details[prop] as string;
         updateObject[`details.${prop}` as string] = value;
       });

@@ -1,12 +1,17 @@
 import { Schema, model } from "mongoose";
-import { TCategory } from "./category.interface";
+import { ICategory } from "./category.interface";
 
-const categorySchema = new Schema<TCategory>(
+const categorySchema = new Schema<ICategory>(
   {
     name: {
       type: String,
       unique: true,
       required: [true, "Category name is required"],
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      required: [true, "User ID is required"],
+      ref: "User",
     },
   },
   {
@@ -14,6 +19,6 @@ const categorySchema = new Schema<TCategory>(
   },
 );
 
-const Category = model<TCategory>("Category", categorySchema);
+const Category = model<ICategory>("Category", categorySchema);
 
 export default Category;

@@ -1,25 +1,26 @@
 import { Types } from "mongoose";
 
-export interface TTags {
+export interface ITags {
   name: string;
   isDeleted: boolean;
 }
 
-export interface TDetails {
+export interface IDetails {
   level: "Beginner" | "Intermediate" | "Advanced";
   description: string;
 }
 
-export interface TCourse {
+export interface ICourse {
   title: string;
   instructor: string;
   categoryId: Types.ObjectId;
   price: number;
-  tags: TTags[];
+  tags: ITags[];
   startDate: string;
   endDate: string;
   language: string;
   provider: string;
   durationInWeeks: number;
-  details: TDetails;
+  details: IDetails;
+  createdBy: Types.ObjectId;
 }

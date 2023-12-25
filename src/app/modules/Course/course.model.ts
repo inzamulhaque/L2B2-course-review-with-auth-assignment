@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { TCourse, TDetails, TTags } from "./course.interface";
+import { ICourse, IDetails, ITags } from "./course.interface";
 
-const courseTagsSchema = new Schema<TTags>(
+const courseTagsSchema = new Schema<ITags>(
   {
     name: {
       type: String,
@@ -15,7 +15,7 @@ const courseTagsSchema = new Schema<TTags>(
   { _id: false },
 );
 
-const courseDetailsSchema = new Schema<TDetails>(
+const courseDetailsSchema = new Schema<IDetails>(
   {
     level: {
       type: String,
@@ -33,7 +33,7 @@ const courseDetailsSchema = new Schema<TDetails>(
   { _id: false },
 );
 
-const courseSchema = new Schema<TCourse>(
+const courseSchema = new Schema<ICourse>(
   {
     title: {
       type: String,
@@ -82,6 +82,11 @@ const courseSchema = new Schema<TCourse>(
     details: {
       type: courseDetailsSchema,
       required: [true, "Course details in weeks is required"],
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      required: [true, "User ID is required"],
+      ref: "User",
     },
   },
   {
