@@ -7,6 +7,7 @@ import Review from "../Review/review.model";
 import { getAllCourseQuery } from "./course.utils";
 import { NextFunction } from "express";
 import { JwtPayload } from "jsonwebtoken";
+import User from "../User/user.model";
 
 // make course type Partial TCourse for durationInWeeks
 const createCourseIntoDB = async (
@@ -236,8 +237,19 @@ const getCourseWithReviewFromDB = async (
   try {
     const id = new mongoose.Types.ObjectId(courseId);
 
-    const result = await Course.aggregate([
-      { $match: { _id: id } },
+    /**
+     * find data from course collection
+     * lookup review data for this course in review collection
+     * get all review id in array
+     * find all review in review collection form populating createdBy data
+     * push review with populated createdBy data into aggregation data
+     */
+
+    // find course with review data
+    const courseWithReview = await Course.aggregate([
+      {
+        $match: { _id: id },
+      },
       {
         $lookup: {
           from: "reviews",
@@ -246,23 +258,25 @@ const getCourseWithReviewFromDB = async (
           as: "reviews",
         },
       },
-      {
-        $project: {
-          __v: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          reviews: {
-            _id: 0,
-            __v: 0,
-            createdAt: 0,
-            updatedAt: 0,
-          },
-        },
-      },
     ]);
 
+    // get all reviews id into array
+    const reviewId = courseWithReview[0].reviews.map(
+      (review: { _id: string }) => review._id,
+    );
+    // populate user info in reviews
+    const reviewWithUser = await Review.find({
+      _id: { $in: reviewId },
+    }).populate({
+      path: "createdBy",
+      select: "-createdAt -updatedAt -__v",
+    });
+
+    // add review data in aggregation with user info
+    courseWithReview[0].reviews = reviewWithUser;
+
     const resultObj = {
-      course: result[0],
+      course: courseWithReview[0],
     };
 
     return resultObj;
@@ -294,6 +308,7 @@ const getBestRatedCourseFromDB = async () => {
         as: "course",
       },
     },
+
     {
       $project: {
         _id: 0,
@@ -302,8 +317,6 @@ const getBestRatedCourseFromDB = async () => {
         updatedAt: 0,
         course: {
           __v: 0,
-          createdAt: 0,
-          updatedAt: 0,
         },
       },
     },
@@ -311,9 +324,16 @@ const getBestRatedCourseFromDB = async () => {
 
   const course = result[0].course[0];
 
+  const createdBy = await User.findById(course.createdBy).select(
+    "-createdAt -updatedAt -__v",
+  );
+
+  // to get two digits of the number after the decimal
+  result[0].averageRating = Number(result[0].averageRating)?.toFixed(2);
+
   const resultObje = {
-    course: { ...course },
-    averageRating: result[0].averageRating,
+    course: { ...course, createdBy },
+    averageRating: Number(result[0].averageRating),
     reviewCount: result[0].reviewCount,
   };
 
