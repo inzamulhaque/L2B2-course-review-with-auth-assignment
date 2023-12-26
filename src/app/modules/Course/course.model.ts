@@ -91,6 +91,7 @@ const courseSchema = new Schema<ICourse>(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

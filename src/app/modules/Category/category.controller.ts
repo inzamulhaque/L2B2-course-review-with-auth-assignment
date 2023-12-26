@@ -8,15 +8,13 @@ import {
 
 const createCategory = catchAsync(async (req, res) => {
   // create category into DB
-  const result = await createCategoryIntoDB(req.body);
-  // object destructuring
-  const { _id, name } = await result.toObject();
+  const result = await createCategoryIntoDB(req.user, req.body);
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.CREATED,
     message: "Category created successfully",
-    data: { _id, name },
+    data: result,
   });
 });
 

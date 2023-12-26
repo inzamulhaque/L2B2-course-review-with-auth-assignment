@@ -9,11 +9,14 @@ import {
   updateCourse,
 } from "./course.controller";
 import { updateCategoryValidationSchema } from "../Category/category.validation";
+import auth from "../../middlewares/auth";
+import { USER_ROLE } from "../User/user.constant";
 
 const router: Router = Router();
 
 router.post(
   "/course",
+  auth(USER_ROLE.admin),
   validateRequest(createCourseValidationSchema),
   createCourse,
 );

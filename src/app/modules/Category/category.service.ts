@@ -1,8 +1,9 @@
+import { JwtPayload } from "jsonwebtoken";
 import { ICategory } from "./category.interface";
 import Category from "./category.model";
 
-const createCategoryIntoDB = async (category: ICategory) => {
-  const result = await Category.create(category);
+const createCategoryIntoDB = async (user: JwtPayload, category: ICategory) => {
+  const result = await Category.create({ ...category, createdBy: user._id });
   return result;
 };
 

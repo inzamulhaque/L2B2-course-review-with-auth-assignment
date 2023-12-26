@@ -72,6 +72,7 @@ const oldPasswordSchema = new Schema<IOldPassword>(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

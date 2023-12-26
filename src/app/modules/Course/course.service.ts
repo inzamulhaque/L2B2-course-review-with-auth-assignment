@@ -6,9 +6,13 @@ import httpStatus from "http-status";
 import Review from "../Review/review.model";
 import { getAllCourseQuery } from "./course.utils";
 import { NextFunction } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 // make course type Partial TCourse for durationInWeeks
-const createCourseIntoDB = async (course: Partial<ICourse>) => {
+const createCourseIntoDB = async (
+  user: JwtPayload,
+  course: Partial<ICourse>,
+) => {
   const { startDate, endDate, details } = course;
   // handling duration
   if (course?.durationInWeeks) {
@@ -41,15 +45,16 @@ const createCourseIntoDB = async (course: Partial<ICourse>) => {
   level = (level as string).charAt(0).toUpperCase() + level.slice(1);
 
   // insert data into database
-  const newCourse = await Course.create({
+  const result = await Course.create({
     ...course,
     durationInWeeks,
+    createdBy: user._id,
     details: { ...details, level },
   });
 
-  const result = await Course.findById(newCourse._id).select(
-    "-__v -createdAt -updatedAt",
-  );
+  // const result = await Course.findById(newCourse._id).select(
+  //   "-__v -createdAt -updatedAt",
+  // );
   return result;
 };
 

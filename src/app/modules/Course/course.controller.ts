@@ -12,7 +12,7 @@ import { NextFunction } from "express";
 
 const createCourse = catchAsync(async (req, res) => {
   // create course into DB
-  const result = await createCourseIntoDB(req.body);
+  const result = await createCourseIntoDB(req.user, req.body);
 
   sendResponse(res, {
     success: true,
