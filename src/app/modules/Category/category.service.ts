@@ -8,7 +8,10 @@ const createCategoryIntoDB = async (user: JwtPayload, category: ICategory) => {
 };
 
 const getAllCategoriesFromDB = async () => {
-  const result = await Category.find().select("name");
+  const result = await Category.find().populate({
+    path: "createdBy",
+    select: "-createdAt -updatedAt -__v",
+  });
   return result;
 };
 
