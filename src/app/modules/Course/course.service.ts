@@ -216,15 +216,16 @@ const updateCourseIntoDB = async (
     await session.commitTransaction();
     await session.endSession();
 
-    const result = await Course.findById(id).select(
-      "-__v -createdAt -updatedAt",
-    );
+    const result = await Course.findById(id).populate({
+      path: "createdBy",
+      select: "-createdAt -updatedAt -__v",
+    });
 
     return result;
-  } catch (error) {
+  } catch (err) {
     await session.abortTransaction();
     await session.endSession();
-    next(error);
+    next(err);
   }
 };
 

@@ -13,7 +13,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     // checking if the token is missing
     if (!token) {
-      // throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized!");
       throw new JWTError();
     }
 
@@ -23,7 +22,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
     const { _id, role } = decoded;
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-      // throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized !");
       throw new JWTError();
     }
 
@@ -31,7 +29,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
     const user = await User.findById(_id);
 
     if (!user) {
-      // throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
       throw new JWTError();
     }
     req.user = decoded as JwtPayload;

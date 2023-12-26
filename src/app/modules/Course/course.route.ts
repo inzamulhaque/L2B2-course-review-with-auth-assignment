@@ -23,6 +23,7 @@ router.post(
 
 router.put(
   "/courses/:courseId",
+  auth(USER_ROLE.admin),
   validateRequest(updateCategoryValidationSchema),
   updateCourse,
 );
