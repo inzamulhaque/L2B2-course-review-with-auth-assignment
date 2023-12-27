@@ -1,6 +1,6 @@
 # Enhanced User Authentication and Authorization System
 
-## [Assignment-4](https://assignment-3-course-review-omega.vercel.app/)
+## [Assignment-4](https://assignment-4-authentication.vercel.app/)
 
 ## [API Documentation](https://documenter.getpostman.com/view/32025135/2s9YkuYJ5o)
 
