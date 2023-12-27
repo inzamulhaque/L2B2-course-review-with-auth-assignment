@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 
 const loginUserService = async (payload: ILoginUser) => {
   // checking if the user is exist
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const user = await User.findOne(
     { username: payload.username },
     { _id: 1, username: 1, email: 1, role: 1, password: 1 },
@@ -115,12 +116,6 @@ const changePasswordIntoDB = async (
 
     // if the user already has two old passwords, delete one
     if (countOldPasswordForSingleUser >= 2) {
-      //   await OldPassword.findOneAndDelete(
-      //     { id: user._id, email: user.email },
-      //     { sort: { createdAt: 1 } },
-      //     { session },
-      //   );
-
       const oldestPassword = await OldPassword.findOne(
         { id: user._id, email: user.email },
         null,
