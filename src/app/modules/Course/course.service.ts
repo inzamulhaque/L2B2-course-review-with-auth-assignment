@@ -305,11 +305,13 @@ const getCourseWithReviewFromDB = async (
     // add review data in aggregation with user info
     courseWithReview[0].reviews = reviewWithUser;
 
+    const { reviews, ...otherInfo } = courseWithReview[0];
     const resultObj = {
       course: {
-        ...courseWithReview[0],
-        createdBy: courseWithReview[0].createdBy[0],
+        ...otherInfo,
+        createdBy: otherInfo.createdBy[0],
       },
+      reviews,
     };
 
     return resultObj;
