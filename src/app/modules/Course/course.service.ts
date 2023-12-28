@@ -270,6 +270,24 @@ const getCourseWithReviewFromDB = async (
           as: "reviews",
         },
       },
+      {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
+      {
+        $project: {
+          createdBy: {
+            password: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            __v: 0,
+          },
+        },
+      },
     ]);
 
     // get all reviews id into array
@@ -288,7 +306,10 @@ const getCourseWithReviewFromDB = async (
     courseWithReview[0].reviews = reviewWithUser;
 
     const resultObj = {
-      course: courseWithReview[0],
+      course: {
+        ...courseWithReview[0],
+        createdBy: courseWithReview[0].createdBy[0],
+      },
     };
 
     return resultObj;
