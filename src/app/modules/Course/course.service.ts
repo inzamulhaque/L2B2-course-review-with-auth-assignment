@@ -15,31 +15,43 @@ const createCourseIntoDB = async (
   course: Partial<ICourse>,
 ) => {
   const { startDate, endDate, details } = course;
+  let { durationInWeeks } = course;
   // handling duration
-  if (course?.durationInWeeks) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "you can't set the duration manually",
-    );
-  }
+  // if (course?.durationInWeeks) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     "you can't set the duration manually",
+  //   );
+  // }
 
-  //   calculate course duration
   const newStartDate = new Date(startDate as string);
   const newEndDate = new Date(endDate as string);
-  const durationInTime = newEndDate.getTime() - newStartDate.getTime();
-  //   calculate course duration in days
-  const durationInDays = Math.round(durationInTime / (1000 * 3600 * 24));
 
-  // handle negative duration
-  if (!(durationInTime > 0)) {
+  if (newStartDate > newEndDate) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       "Course starting date can't be greater than the course ending date",
     );
   }
 
-  //  calculate course duration in weeks
-  const durationInWeeks = Math.ceil(durationInDays / 7);
+  if (!durationInWeeks) {
+    //   calculate course duration
+    const durationInTime = newEndDate.getTime() - newStartDate.getTime();
+    //   calculate course duration in days
+    const durationInDays = Math.round(durationInTime / (1000 * 3600 * 24));
+
+    // handle negative duration
+    if (!(durationInTime > 0)) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Course starting date can't be greater than the course ending date",
+      );
+    }
+
+    //  calculate course duration in weeks
+    durationInWeeks = Math.ceil(durationInDays / 7);
+  }
+  durationInWeeks = Math.ceil(durationInWeeks);
 
   // course level capitalize
   let level: string = details?.level as string;
